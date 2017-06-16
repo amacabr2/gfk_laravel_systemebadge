@@ -24,9 +24,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Comment::class, function (Faker\Generator $faker) {
-    static $password;
-
     return [
-        'name' => $faker->text()
+        'content' => $faker->text()
     ];
 });

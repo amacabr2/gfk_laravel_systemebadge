@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\Comment;
+use App\User;
 use Badge\Badge;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -15,11 +17,23 @@ class BadgeTest extends TestCase {
     public function testUnlockBadgeAutomatically() {
         Badge::create([
             'name' => 'Pipelette',
-            'action' => 'comment',
+            'action' => 'comments',
             'action_count' => 2
         ]);
+        $user = factory(User::class)->create();
+        factory(Comment::class, 3)->create(['user_id' => $user->id]);
+        $this->assertEquals(1, $user->badges()->count());
+    }
 
-        $this->assertEquals(1, Badge::count());
+    public function testDontUnlockBadgeForNotEnoughAction(){
+        Badge::create([
+            'name' => 'Pipelette',
+            'action' => 'comments',
+            'action_count' => 2
+        ]);
+        $user = factory(User::class)->create();
+        factory(Comment::class)->create(['user_id' => $user->id]);
+        $this->assertEquals(0, $user->badges()->count());
     }
 
 }
