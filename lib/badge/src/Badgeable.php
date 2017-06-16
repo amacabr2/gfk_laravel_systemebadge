@@ -5,7 +5,7 @@ namespace Badge;
 
 trait Badgeable {
 
-    public function Badges() {
+    public function badges() {
         return $this->belongsToMany(Badge::class);
     }
 
