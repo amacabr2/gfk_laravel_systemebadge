@@ -22,12 +22,7 @@ class BadgeSubscriber {
     public function onNewComment($comment) {
         $user = $comment->user;
         $comments_count = $user->comments()->count();
-        $badge = Badge::where('action', 'comments')
-            ->where('action_count', $comments_count)
-            ->first();
-        if ($badge) {
-            $user->badges()->attach($badge);
-        }
+        $badge = $this->badge->unlockActionFor($user, 'comments', $comments_count);
     }
 
 }
