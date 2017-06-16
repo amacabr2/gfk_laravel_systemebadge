@@ -19,6 +19,10 @@ class BadgeSubscriber {
         $events->listen('eloquent.saved: App\Comment', [$this, 'onNewComment']);
     }
 
+    /**
+     * Evenement pour regarder s'il faut débloquer un badge
+     * @param $comment
+     */
     public function onNewComment($comment) {
         $user = $comment->user;
         $comments_count = $user->comments()->count();

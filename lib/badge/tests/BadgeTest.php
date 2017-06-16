@@ -14,6 +14,9 @@ class BadgeTest extends TestCase {
     use DatabaseTransactions;
     use DatabaseMigrations;
 
+    /**
+     * Test si le badge se créer bien automatiquement
+     */
     public function testUnlockBadgeAutomatically() {
         Badge::create([
             'name' => 'Pipelette',
@@ -25,6 +28,9 @@ class BadgeTest extends TestCase {
         $this->assertEquals(1, $user->badges()->count());
     }
 
+    /**
+     * Test si le badge se créer pas lorsqu'il ne le faut pas
+     */
     public function testDontUnlockBadgeForNotEnoughAction(){
         Badge::create([
             'name' => 'Pipelette',
@@ -36,6 +42,9 @@ class BadgeTest extends TestCase {
         $this->assertEquals(0, $user->badges()->count());
     }
 
+    /**
+     * Test si on a pas de doublon de badge
+     */
     public function testUnlockDoubleBadge(){
         Badge::create([
             'name' => 'Pipelette',
