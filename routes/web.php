@@ -20,3 +20,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('comments', 'CommentController', ['only' => ['store']]);
+
+Route::resource('notifications', 'NotificationController', ['only' => ['show']]);

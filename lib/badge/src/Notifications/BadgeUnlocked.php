@@ -32,7 +32,7 @@ class BadgeUnlocked extends Notification {
      * @return array
      */
     public function via($notifiable) {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -56,6 +56,10 @@ class BadgeUnlocked extends Notification {
         return [
             'name' => $this->badge->name
         ];
+    }
+
+    public static function toText($data) {
+        return "Vous avez débloquez le badge " . $data['name'];
     }
 
 }
