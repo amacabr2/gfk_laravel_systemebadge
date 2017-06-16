@@ -10,13 +10,19 @@ class Badge extends Model {
     protected $guarded = [];
     public $timestamps = false;
 
+    public function unlocks() {
+        return $this->hasMany(BadgeUnlock::class);
+    }
+
     /**
      * Regarde si l'utilisateur a déjà le badge ou non
      * @param User $user
      * @return bool
      */
     public function isUnlockedFor(User $user): bool {
-        return $user->badges->contains($this);
+        return $this->unlocks()
+            ->where('user_id', $user->id)
+            ->exists();
     }
 
     /**
