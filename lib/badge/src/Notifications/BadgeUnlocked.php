@@ -5,7 +5,6 @@ namespace Badge\Notifications;
 use Badge\Badge;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class BadgeUnlocked extends Notification {
