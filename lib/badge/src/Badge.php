@@ -32,7 +32,7 @@ class Badge extends Model {
      * @param int $count
      * @return mixed|null
      */
-    public function unlockActionFor(User $user, string $action, int $count) {
+    public function unlockActionFor(User $user, string $action, int $count = 0) {
         $badge = $this->newQuery()
             ->where('action', $action)
             ->where('action_count', $count)

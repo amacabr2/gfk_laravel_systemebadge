@@ -2,6 +2,8 @@
 
 namespace Badge;
 
+use App\Events\Premium;
+use App\User;
 use Badge\Notifications\BadgeUnlocked;
 
 class BadgeSubscriber {
@@ -19,6 +21,18 @@ class BadgeSubscriber {
      */
     public function subscribe($events) {
         $events->listen('eloquent.saved: App\Comment', [$this, 'onNewComment']);
+        $events->listen(Premium::class, [$this, 'onPremium']);
+    }
+
+    /**
+     * Envoi notification
+     * @param User $user
+     * @param Badge $badge
+     */
+    public function notifyBadgeUnlock($user, $badge) {
+        if ($badge) {
+            $user->notify(new BadgeUnlocked($badge));
+        }
     }
 
     /**
@@ -29,9 +43,17 @@ class BadgeSubscriber {
         $user = $comment->user;
         $comments_count = $user->comments()->count();
         $badge = $this->badge->unlockActionFor($user, 'comments', $comments_count);
-        if ($badge) {
-            $user->notify(new BadgeUnlocked($badge));
-        }
+        $this->notifyBadgeUnlock($user, $badge);
+    }
+
+    /**
+     * Evenement pour savoir si l'utisateur est premium ou pas
+     * @param Premium $event
+     * @internal param $arg
+     */
+    public function onPremium(Premium $event) {
+        $badge = $this->badge->unlockActionFor($event->user, 'premium');
+        $this->notifyBadgeUnlock($event->user, $badge);
     }
 
 }
