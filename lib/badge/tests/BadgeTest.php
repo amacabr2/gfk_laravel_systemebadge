@@ -12,12 +12,13 @@ class BadgeTest extends TestCase {
     use DatabaseTransactions;
     use DatabaseMigrations;
 
-    public function testFakeThings() {
+    public function testUnlockBadgeAutomatically() {
         Badge::create([
             'name' => 'Pipelette',
             'action' => 'comment',
-            'action_acount' => 2
+            'action_count' => 2
         ]);
+
         $this->assertEquals(1, Badge::count());
     }
 
