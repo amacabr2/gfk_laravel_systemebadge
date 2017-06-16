@@ -5,8 +5,10 @@ namespace Tests\Unit;
 use App\Comment;
 use App\User;
 use Badge\Badge;
+use Badge\Notifications\BadgeUnlocked;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class BadgeTest extends TestCase {
@@ -14,15 +16,19 @@ class BadgeTest extends TestCase {
     use DatabaseTransactions;
     use DatabaseMigrations;
 
-    /**
-     * Test si le badge se créer bien automatiquement
-     */
-    public function testUnlockBadgeAutomatically() {
+    public function setBadge() {
         Badge::create([
             'name' => 'Pipelette',
             'action' => 'comments',
             'action_count' => 2
         ]);
+    }
+
+    /**
+     * Test si le badge se créer bien automatiquement
+     */
+    public function testUnlockBadgeAutomatically() {
+        $this->setBadge();
         $user = factory(User::class)->create();
         factory(Comment::class, 3)->create(['user_id' => $user->id]);
         $this->assertEquals(1, $user->badges()->count());
@@ -31,12 +37,8 @@ class BadgeTest extends TestCase {
     /**
      * Test si le badge se créer pas lorsqu'il ne le faut pas
      */
-    public function testDontUnlockBadgeForNotEnoughAction(){
-        Badge::create([
-            'name' => 'Pipelette',
-            'action' => 'comments',
-            'action_count' => 2
-        ]);
+    public function testDontUnlockBadgeForNotEnoughAction() {
+        $this->setBadge();
         $user = factory(User::class)->create();
         factory(Comment::class)->create(['user_id' => $user->id]);
         $this->assertEquals(0, $user->badges()->count());
@@ -46,17 +48,24 @@ class BadgeTest extends TestCase {
      * Test si on a pas de doublon de badge
      */
     public function testUnlockDoubleBadge(){
-        Badge::create([
-            'name' => 'Pipelette',
-            'action' => 'comments',
-            'action_count' => 2
-        ]);
+        $this->setBadge();
         $user = factory(User::class)->create();
         factory(Comment::class, 2)->create(['user_id' => $user->id]);
         $this->assertEquals(1, $user->badges()->count());
         Comment::first()->delete();
         factory(Comment::class, 2)->create(['user_id' => $user->id]);
         $this->assertEquals(1, $user->badges()->count());
+    }
+
+    /**
+     * Regarde si la notification est envoyé
+     */
+    public function testNotificationSent() {
+        Notification::fake();
+        $this->setBadge();
+        $user = factory(User::class)->create();
+        factory(Comment::class, 3)->create(['user_id' => $user->id]);
+        Notification::assertSentTo([$user], BadgeUnlocked::class);
     }
 
 }

@@ -30,6 +30,7 @@ class Badge extends Model {
      * @param User $user
      * @param string $action
      * @param int $count
+     * @return mixed|null
      */
     public function unlockActionFor(User $user, string $action, int $count) {
         $badge = $this->newQuery()
@@ -38,7 +39,9 @@ class Badge extends Model {
             ->first();
         if ($badge and !$badge->isUnlockedFor($user)) {
             $user->badges()->attach($badge);
+            return $badge;
         }
+        return null;
     }
 
 }

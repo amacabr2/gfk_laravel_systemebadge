@@ -25,7 +25,7 @@
 
                         <h2>Comments</h2>
 
-                        @if (empty($comments))
+                        @if (count($comments) != 0)
                             @foreach($comments as $comment)
                                 <p>{{ $comment->content }}</p>
                                 <hr>

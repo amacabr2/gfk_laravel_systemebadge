@@ -2,6 +2,8 @@
 
 namespace Badge;
 
+use Badge\Notifications\BadgeUnlocked;
+
 class BadgeSubscriber {
 
     private $badge;
@@ -27,6 +29,9 @@ class BadgeSubscriber {
         $user = $comment->user;
         $comments_count = $user->comments()->count();
         $badge = $this->badge->unlockActionFor($user, 'comments', $comments_count);
+        if ($badge) {
+            $user->notify(new BadgeUnlocked($badge));
+        }
     }
 
 }
