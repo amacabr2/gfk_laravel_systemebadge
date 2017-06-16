@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Badge;
 
 use Illuminate\Database\Eloquent\Model;
 
