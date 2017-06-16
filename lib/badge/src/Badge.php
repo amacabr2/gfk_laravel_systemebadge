@@ -4,7 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Badge extends Model
-{
-    //
+class Badge extends Model {
+
+
+
 }
